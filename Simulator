@@ -1,0 +1,84 @@
+import random
+global iterations
+global loop
+stay = switch = False
+
+items = ['Car', 'Goat', 'Goat']
+flagmain = True
+
+while True:
+    option = int(input('Always Switch (1)\nAlways Stay (2) - '))
+    if option == 1:
+        switch = True
+        break
+    elif option == 2:
+        stay = True
+        break
+    else:
+        print('Invalid Entry')
+
+loop = oldscore = 0
+while flagmain is True:
+    pts = 0
+    while True:
+        try:
+            iterations = int(input('How many iterations do you want to run? - '))
+            if 0 < iterations <= 10000:
+                break
+            else:
+                print('Natural numbers upto 100 only.')
+        except ValueError:
+            print('Natural numbers upto 100 only.')
+
+    for x in range(iterations):
+
+        random.shuffle(items)
+        choice1 = items[0]
+        flag = True
+
+        rand = random.randint(1,2)
+        if items[rand] == 'Goat':
+            flag = False
+
+        if flag is True:
+            for i in range(1, 3):
+                if i != rand:
+                    rand = i
+                    break
+
+        global final
+
+        if switch is True:
+            for j in range(1, 3):
+                if j != rand:
+                    final = j
+                    break
+
+        elif stay is True:
+            final = 0
+
+        if items[final] == 'Car':
+            pts += 1
+
+    loop += 1
+
+    print('loop {}'.format(loop))
+    newscore = pts/iterations
+    score = ((oldscore*(loop-1))+newscore)/loop
+    oldscore = score
+
+    if switch is True:
+        print('For Switching, probability of winning after {} iterations is {:.2f}'.format(iterations, score))
+    elif stay is True:
+        print('For Staying, probability of winning after {} iterations is {:.2f}'.format(iterations, score))
+
+    while True:
+        cont = str(input('Would you like to iterate more? y/n - '))
+        if cont == 'y':
+            break
+        elif cont == 'n':
+            print('Alright! No worries')
+            flagmain = False
+            break
+        else:
+            print('Invalid Entry')
