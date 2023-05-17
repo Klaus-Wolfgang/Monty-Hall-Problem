@@ -1,0 +1,204 @@
+# You must first create a directory names 'Python' in your E: drive and then a sub directory named 'Monty Hall Problem' for this code to work
+# You may find and replace the destination address throughout the code according to your preference.
+# Default is E:\Python\Monty Hall Problem
+
+import os
+import random
+import time
+
+def dotdotdot():
+    print('.', end='')
+    time.sleep(0.5)
+    print('.', end='')
+    time.sleep(0.5)
+    print('.')
+    time.sleep(0.5)
+
+# Removing any stray goats and cars from previous game.
+
+pointswitch = pointstay = 0
+
+while True:
+    objs = ['Goat 1.txt', 'Goat 2.txt', 'Car.txt']
+    doors = ['Door 1', 'Door 2', 'Door 3']
+    for i in range(3):
+        path = 'E:\\Python\\Monty Hall Problem\\{}'.format(objs[i])
+        if os.path.exists(path):
+            os.remove(path)
+
+    for i in range(3):
+        path0 = 'E:\\Python\\Monty Hall Problem\\Door {}\\Goat 1.txt'.format(i+1)
+        path1 = 'E:\\Python\\Monty Hall Problem\\Door {}\\Goat 2.txt'.format(i+1)
+        path2 = 'E:\\Python\\Monty Hall Problem\\Door {}\\Car.txt'.format(i+1)
+        for j in range(3):
+            path = 'path{}'.format(j)   #testing out path1 path2 path3 if they exist
+            chk = locals()[path]   # making that string path into a variable
+            if os.path.exists(chk):  # if it exists, delete
+                os.remove(chk)
+
+    # Adding any deleted folders (doors) back
+
+    for i in range(1, 4):
+        path0 = 'E:\\Python\\Monty Hall Problem\\Door {}'.format(i)
+        path1 = 'E:\\Python\\Monty Hall Problem\\Door {}'.format(i)
+        path2 = 'E:\\Python\\Monty Hall Problem\\Door {}'.format(i)
+        for j in range(3):
+            path = 'path{}'.format(j)  # testing out path1 path2 path3 if they exist
+            chk = locals()[path]  # making that string path into a variable
+            if not os.path.exists(chk):  # if folder doesn't exist, create it
+                os.mkdir(chk)
+
+    # START OF GAME
+    # Creating the goats and car objects
+
+    try:
+
+        with open('E:\\Python\\Monty Hall Problem\\Goat 1.txt', 'x') as file:
+            file.write('Too bad')
+
+        with open('E:\\Python\\Monty Hall Problem\\Goat 2.txt', 'x') as file:
+            file.write('Too Bad')
+
+        with open('E:\\Python\\Monty Hall Problem\\Car.txt', 'x') as file:
+            file.write('Congratulations!')
+
+    except FileExistsError:
+        print('Some files already exist. Please delete')
+
+    # Press Enter to sort the goats and car
+
+    while True:
+        enter = input("Press Enter to shuffle")
+        if enter == '':
+            break
+        elif enter == 'x':
+            print('Alright! See you another day!')
+            exit()
+        else:
+            print('Invalid Entry\n')
+
+    # Sorting randomly behind doors 1 to 3
+
+    for i in range(1, 4):
+        temp = random.choice(objs)
+        objs.remove(temp)
+        source = 'E:\\Python\\Monty Hall Problem\\{}'.format(temp)
+        dest = 'E:\\Python\\Monty Hall Problem\\Door {}\\{}'.format(i, temp)
+        os.replace(source, dest)
+
+    dotdotdot()
+    print('The car and goats have been shuffled successfully.')
+
+    global choose
+    # User chooses a door
+    Flagchk = True
+    while Flagchk is True:
+        try:
+            while True:
+                choose = int(input('Pick a door number - '))
+                if choose in [1,2,3]:
+                    Flagchk = False
+                    break
+                else:
+                    print('Only Door 1 to 3 exist!')
+
+        except ValueError:
+            print('Enter natural numbers 1, 2 or 3 only')
+
+    print('Good Choice! ', end='')
+    time.sleep(1)
+    print('I will now reveal another door with a goat behind it!', end='')
+    dotdotdot()
+
+    # Finding a door to reveal and Deleting the file and folder with the goat.
+
+    global rand  # defining a global variable
+
+    while True:
+        rand = random.randint(1,3)
+        if rand != choose:  # making sure random door is not the same as what user picked.
+            break
+
+    flag1 = flag = True
+
+    while flag is True:
+
+        path0 = 'E:\\Python\\Monty Hall Problem\\Door {}\\Goat 1.txt'.format(rand)
+        path1 = 'E:\\Python\\Monty Hall Problem\\Door {}\\Goat 2.txt'.format(rand)
+
+        for j in range(2):
+            path = 'path{}'.format(j)  # testing out path1 path0 if they exist
+            x = locals()[path]  # making that string 'path' into a variable
+            if os.path.exists(x):  # if it exists, delete
+                os.remove(x)
+                os.rmdir('E:\\Python\\Monty Hall Problem\\Door {}'.format(rand))
+                doors.remove('Door {}'.format(rand))
+                print('There is a goat behind Door {}.'.format(rand), 'That door has now been removed.')
+                flag1 = flag = False
+                break
+
+        if flag1 is True:               # The random door had the car, so it bypassed the previous for loop.
+                                        # We need loop again with a new door which is neither the random one nor the chosen door
+            for i in range(1,4):        # We don't use randint again because, it could loop forever if the randint always
+                                        # gives us the door with a car or the door we chose
+                if i != choose and i != rand:
+                    rand = i
+                    break
+
+    time.sleep(2)
+
+    # Switch or Stay
+    print('The remaining doors are, ', end='')
+    for i in doors:
+        print(i, end=' ')
+    time.sleep(2)
+
+    global otherdoor
+
+    print('\nWould you like to stay with Door {},'.format(choose), end='')
+    for l in range(2):
+        if 'Door {}'.format(choose) != doors[l]:
+            otherdoor = doors[l]
+            print(' or would you like to switch to {}'.format(doors[l]))
+            break
+
+    time.sleep(2)
+    decision = (input("To stay, press '9'\nTo switch press '0' - "))
+    if decision == '9':
+        path = 'E:\\Python\\Monty Hall Problem\\Door {}\\Car.txt'.format(choose)
+        if os.path.exists(path):
+            print('Yay you win a car!')
+            pointstay += 1
+        else:
+            print('Oh no. A goat!')
+
+    elif decision == '0':
+        path = 'E:\\Python\\Monty Hall Problem\\{}\\Car.txt'.format(otherdoor)
+        if os.path.exists(path):
+            print('Yay you win a car!')
+            pointswitch += 1
+        else:
+            print('Oh no. A goat!\n____________________________')
+
+    else:
+        print('Invalid Entry')
+        exit()
+
+    print('Points for\nStay - {}\nSwitch - {}\n____________________________'.format(pointstay, pointswitch))
+
+    while True:
+        start = input('Would you like to play again y/n - ')
+        if start == 'n':
+            print('Okay no worries!')
+            exit()
+        elif start == 'y':
+            break
+        else:
+            print('Alright no worries!')
+            exit()
+
+
+# Blah Blah Blah
+# Blah Blah Blah
+# Blah Blah Blah
+# Wow. 200 lines of code （; ￣-￣）
