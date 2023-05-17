@@ -5,6 +5,7 @@
 import os
 import random
 import time
+import shutil
 
 def dotdotdot():
     print('.', end='')
@@ -27,14 +28,8 @@ while True:
             os.remove(path)
 
     for i in range(3):
-        path0 = 'E:\\Python\\Monty Hall Problem\\Door {}\\Goat 1.txt'.format(i+1)
-        path1 = 'E:\\Python\\Monty Hall Problem\\Door {}\\Goat 2.txt'.format(i+1)
-        path2 = 'E:\\Python\\Monty Hall Problem\\Door {}\\Car.txt'.format(i+1)
-        for j in range(3):
-            path = 'path{}'.format(j)   #testing out path1 path2 path3 if they exist
-            chk = locals()[path]   # making that string path into a variable
-            if os.path.exists(chk):  # if it exists, delete
-                os.remove(chk)
+        path0 = 'E:\\Python\\Monty Hall Problem\\Door {}'.format(i+1)
+        shutil.rmtree(path0)
 
     # Adding any deleted folders (doors) back
 
@@ -123,7 +118,7 @@ while True:
 
     while flag is True:
 
-        path0 = 'E:\\Python\\Monty Hall Problem\\Door {}\\Goat 1.txt'.format(rand)
+        path0 = 'E:\\Python\\Monty Hall Problem\\Door {}\\Goat 1.txt'.format(rand)  # shutil.rmtree can also be used.
         path1 = 'E:\\Python\\Monty Hall Problem\\Door {}\\Goat 2.txt'.format(rand)
 
         for j in range(2):
